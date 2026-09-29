@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSS Houdini Paint Worklet 背景图案演示</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header>
+  <h1>Paint Worklet 背景图案实验室</h1>
+  <p>渐变 / 噪点 / 条纹 / 粒子 · CSS 变量实时传参 · 性能对照</p>
+</header>
+
+<div id="notice" class="notice"></div>
+
+<section class="controls">
+  <label>图案类型
+    <select id="ctl-type">
+      <option value="gradient">渐变</option>
+      <option value="stripes">条纹</option>
+      <option value="noise">噪点</option>
+      <option value="particles">粒子</option>
+      <option value="full" selected>全部叠加</option>
+    </select>
+  </label>
+  <label>主色相 <input id="ctl-hue" type="range" min="0" max="360" value="210"></label>
+  <label>副色相 <input id="ctl-hue2" type="range" min="0" max="360" value="280"></label>
+  <label>密度 <input id="ctl-density" type="range" min="0" max="100" value="50"></label>
+  <label>随机种子 <input id="ctl-seed" type="range" min="1" max="999" value="42"></label>
+  <label>卡片高度 <input id="resize-slider" type="range" min="120" max="360" value="220"></label>
+  <button id="stress-btn">运行 4s 性能压测</button>
+  <button id="bad-value-btn">注入非法变量值（容错测试）</button>
+</section>
+
+<section class="cards">
+  <figure>
+    <div id="card-worklet" class="card mode-worklet"></div>
+    <figcaption>① Paint Worklet 背景（不支持时自动降级静态图）</figcaption>
+  </figure>
+  <figure>
+    <div id="card-static" class="card mode-static"></div>
+    <figcaption>② 普通背景图（dataURL，对照组）</figcaption>
+  </figure>
+  <figure>
+    <div id="card-canvas" class="card mode-canvas">
+      <canvas id="overlay-canvas"></canvas>
+    </div>
+    <figcaption>③ Canvas 覆盖层（对照组）</figcaption>
+  </figure>
+</section>
+
+<section class="perf">
+  <h2>性能对照（PerformanceObserver + rAF 帧采样，历史存 IndexedDB）</h2>
+  <table>
+    <thead>
+      <tr><th>时间</th><th>模式</th><th>帧数</th><th>平均帧 ms</th><th>P95 帧 ms</th><th>掉帧数</th><th>长任务</th><th>覆盖层绘制 ms</th></tr>
+    </thead>
+    <tbody id="perf-body"></tbody>
+  </table>
+</section>
+
+<script src="js/db.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

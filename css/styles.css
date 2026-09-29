@@ -1,0 +1,91 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: #14161c;
+  color: #e8eaf0;
+  padding: 24px;
+}
+header h1 { margin: 0 0 4px; font-size: 22px; }
+header p { margin: 0 0 16px; color: #9aa3b5; font-size: 14px; }
+
+.notice {
+  display: none;
+  padding: 10px 14px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 14px;
+}
+.notice.show { display: block; }
+.notice.info  { background: #1d2b45; color: #9fc2ff; }
+.notice.ok    { background: #14351f; color: #8fe3a8; }
+.notice.warn  { background: #3a2f14; color: #ffd98a; }
+.notice.error { background: #3d1a1a; color: #ff9c9c; }
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px 20px;
+  align-items: center;
+  padding: 14px;
+  background: #1c1f28;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+.controls label { display: flex; align-items: center; gap: 8px; }
+.controls button {
+  background: #3b6fe0;
+  color: #fff;
+  border: 0;
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+}
+.controls button:disabled { opacity: .5; cursor: wait; }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+}
+figure { margin: 0; }
+figcaption { font-size: 13px; color: #9aa3b5; margin-top: 8px; }
+
+.card {
+  height: 220px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  border: 1px solid #2a2e3a;
+  /* 未就绪/降级时的保底静态渐变，保证任何情况下都有样式一致的背景 */
+  background: linear-gradient(135deg, hsl(210,70%,55%), hsl(280,70%,45%));
+}
+
+/* Worklet 模式：paint() 引用自定义画笔 */
+.card.worklet-on {
+  background-image: paint(pattern-bg);
+}
+
+/* Canvas 覆盖层 */
+.mode-canvas canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.perf { margin-top: 24px; }
+.perf h2 { font-size: 16px; }
+.perf table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.perf th, .perf td {
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid #2a2e3a;
+}
+.perf th { color: #9aa3b5; font-weight: 600; }
