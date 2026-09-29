@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CSS Houdini Paint Worklet 动态背景</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">CSS Houdini · Canvas 2D · Worker · IndexedDB</p>
+        <h1>自定义画笔动态背景</h1>
+        <p class="subtitle">渐变、噪点、条纹、粒子由同一绘制器渲染，可在 Worklet、普通背景图和 Canvas 覆盖层之间量化对比。</p>
+      </div>
+      <div class="support-card">
+        <span id="supportBadge" class="badge">检测中</span>
+        <strong id="currentMode">初始化</strong>
+      </div>
+    </header>
+
+    <section class="workspace">
+      <div class="stage-wrap">
+        <div id="stage" class="stage" aria-label="动态背景预览">
+          <canvas id="overlayCanvas" class="overlay-canvas" hidden></canvas>
+          <div class="stage-copy">
+            <span>Custom Paint</span>
+            <h2>实时 CSS 变量参数</h2>
+            <p>拖动控件、改变窗口或点击故障注入，观察 Worklet 重绘与降级链路。</p>
+          </div>
+        </div>
+        <div id="status" class="status" role="status" aria-live="polite">正在初始化……</div>
+        <ul id="warningList" class="warning-list" aria-label="参数和降级提示"></ul>
+      </div>
+
+      <aside class="panel controls-panel">
+        <h2>绘制参数</h2>
+        <label>
+          图案
+          <select id="patternSelect">
+            <option value="gradient">渐变</option>
+            <option value="noise">噪点</option>
+            <option value="stripes">条纹</option>
+            <option value="particles">粒子</option>
+          </select>
+        </label>
+
+        <div class="color-grid">
+          <label>主色 <input id="color1" type="color" value="#2563eb"></label>
+          <label>辅色 <input id="color2" type="color" value="#ec4899"></label>
+        </div>
+
+        <label>密度 <input id="density" type="range" min="0" max="1" step="0.01" value="0.55"><output id="densityValue">0.55</output></label>
+        <label>角度 <input id="angle" type="range" min="0" max="360" step="1" value="28"><output id="angleValue">28°</output></label>
+        <label>透明度 <input id="opacity" type="range" min="0" max="1" step="0.01" value="1"><output id="opacityValue">1.00</output></label>
+        <label>条纹宽度 <input id="stripeWidth" type="range" min="2" max="100" step="1" value="28"><output id="stripeWidthValue">28px</output></label>
+        <label>粒子大小 <input id="particleSize" type="range" min="0.5" max="12" step="0.1" value="2.4"><output id="particleSizeValue">2.4px</output></label>
+        <label>种子 <input id="seed" type="number" min="0" max="999999" step="1" value="1337"><output id="seedValue">1337</output></label>
+        <label>预览高度 <input id="stageHeight" type="range" min="240" max="640" step="8" value="420"><output id="heightValue">420px</output></label>
+      </aside>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <div>
+          <h2>渲染模式与故障处理</h2>
+          <p>Worklet 加载失败或不支持时，自动切换 Worker 生成的同源静态 PNG；再失败则使用纯 CSS 兜底。</p>
+        </div>
+      </div>
+      <div class="button-row">
+        <button data-mode="worklet">Paint Worklet</button>
+        <button data-mode="image">普通背景图</button>
+        <button data-mode="canvas">Canvas 覆盖层</button>
+      </div>
+      <div class="button-row secondary">
+        <button id="simulateFailure">模拟 Worklet 加载失败</button>
+        <button id="simulateCors">模拟跨域限制</button>
+        <button id="injectInvalidVars">注入错误类型 CSS 变量</button>
+        <button id="clearCache">清空 IndexedDB 图片缓存</button>
+        <button id="reloadPage">重新加载</button>
+      </div>
+    </section>
+
+    <section class="panel benchmark-panel">
+      <div class="section-heading">
+        <div>
+          <h2>量化性能对照</h2>
+          <p>每模式运行 4 秒，记录 rAF FPS、P95 帧间隔、掉帧、PerformanceObserver 长任务和同步绘制成本。</p>
+        </div>
+        <button id="runBenchmark" class="primary">运行 12 秒基准测试</button>
+      </div>
+      <div id="benchmarkProgress" class="benchmark-progress">尚未运行</div>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>模式</th><th>FPS</th><th>P95 帧间隔</th><th>掉帧</th><th>长任务</th><th>绘制耗时</th><th>说明</th>
+            </tr>
+          </thead>
+          <tbody id="benchmarkBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/paint-core.js"></script>
+  <script src="js/raf-throttle.js"></script>
+  <script src="js/background-cache.js"></script>
+  <script src="js/worker-rasterizer.js"></script>
+  <script src="js/background-renderer.js"></script>
+  <script src="js/perf-monitor.js"></script>
+  <script src="js/benchmark.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
